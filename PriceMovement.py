@@ -43,13 +43,13 @@ def sendEmail(values, server):
 	values['url'] = 'http://www.bazaarfunda.com'
 	template = EmailTemplate(template_name='PriceMovement.html', values=values)
 	
-	msg = MailMessage(from_email='dude.abhi.chat@gmail.com', to_emails=[values['email']], subject='BazaarFunda Price Alert For You', body=template.render())
+	msg = MailMessage(from_email='bazaarfunda@gmail.com', to_emails=[values['email']], subject='BazaarFunda Price Alert For You', body=template.render())
 	send(mail_msg=msg, mail_server = server)
 
 @celery.task
 def priceMovement():
 	
-	server = MailServer(server_name='smtp.gmail.com', username='bazaarfunda@gmail.com', password='krish1436', port=0,   require_starttls=True)
+	server = MailServer(server_name='smtp.gmail.com', username='dude.abhi.chat@gmail.com', password='malesbian', port=0,   require_starttls=True)
 	client = getMongoClient('PriceSubscribers')
 	priceSubscribers = client.priceSubscribers
 	client = getMongoClient('compareDB')
@@ -68,6 +68,7 @@ def priceMovement():
 		values['ProductURL'] = 'http://www.bazaarfunda.com/pdp/' + user['productId']
 		values['ProductImage'] = 'http://www.bazaarfunda.com/static/img/ImageScrappers/' + user['productName'].replace(' ', '%20') + '.jpg'
 		values['ProductPrice'] = productPrice
+		values['email'] = user['email']
 		print "preparing to sendmail"
 		
 		sendEmail.apply_async(args=[values, server])
