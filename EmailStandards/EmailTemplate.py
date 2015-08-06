@@ -1,4 +1,7 @@
 import os
+import traceback
+import sys
+
 class EmailTemplate():
 	dirname = os.path.dirname
 	path = dirname(dirname(__file__))
@@ -11,6 +14,12 @@ class EmailTemplate():
 		self.html = html
 	def render(self):
 		content = open(self.path + self.TEMPLATE_DIR + self.template_name).read()
+		content = content.decode('utf-8')
 		for k,v in self.values.iteritems():
-			content = content.replace('[%s]' % k,v)
+			try:
+				content = content.replace('[%s]' % k,str(v))
+			except Exception, err:
+				print k,v
+				print(traceback.format_exc())
+		# content = content.encode("ascii")
 		return content
