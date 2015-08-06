@@ -43,7 +43,7 @@ def sendEmail(values, server):
 	values['url'] = 'http://www.bazaarfunda.com'
 	template = EmailTemplate(template_name='PriceMovement.html', values=values)
 	
-	msg = MailMessage(from_email='dude.abhi.chat@gmail.com', to_emails=['dude.abhi.chat@gmail.com'], subject='BazaarFunda Price Alert For You', body=template.render())
+	msg = MailMessage(from_email='dude.abhi.chat@gmail.com', to_emails=[values['email']], subject='BazaarFunda Price Alert For You', body=template.render())
 	send(mail_msg=msg, mail_server = server)
 
 @celery.task
@@ -69,8 +69,9 @@ def priceMovement():
 		values['ProductImage'] = 'http://www.bazaarfunda.com/static/img/ImageScrappers/' + user['productName'].replace(' ', '%20') + '.jpg'
 		values['ProductPrice'] = productPrice
 		print "preparing to sendmail"
-		priceSubscribers.save(user)
+		
 		sendEmail.apply_async(args=[values, server])
+		priceSubscribers.save(user)
 		#current_app.send_task('PriceMovement.sendEmail', args=[values])
 		print "sent mail"
 priceMovement()
