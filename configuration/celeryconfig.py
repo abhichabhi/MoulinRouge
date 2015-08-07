@@ -13,6 +13,6 @@ CELERY_MONGODB_BACKEND_SETTINGS = {
 CELERYBEAT_SCHEDULE = {
 'every-minute': {
 'task': 'PriceMovement.priceMovement',
-'schedule': crontab(minute='*/1'),
+'schedule': crontab(minute=0, hour=0)),
 },
 } 
