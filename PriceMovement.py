@@ -70,9 +70,10 @@ def priceMovement():
 		values['ProductPrice'] = productPrice
 		values['email'] = user['email']
 		print "preparing to sendmail"
-		
-		sendEmail.apply_async(args=[values, server])
-		priceSubscribers.save(user)
-		#current_app.send_task('PriceMovement.sendEmail', args=[values])
-		print "sent mail"
+		if productPrice < user['priceCutOff']:
+			success = sendEmail.apply_async(args=[values, server])
+			if success:
+				priceSubscribers.save(user)
+				#current_app.send_task('PriceMovement.sendEmail', args=[values])
+				print "sent mail"
 priceMovement()
