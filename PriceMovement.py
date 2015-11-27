@@ -8,6 +8,7 @@ from celery import current_app
 import time
 from celery import signature
 import ConfigParser
+import requests
 BROKER_URL = 'mongodb://localhost:27017/jobs'
  
 celery = Celery('EOD_TASKS',broker=BROKER_URL)
@@ -30,7 +31,6 @@ def ConfigSectionMap(section):
                 configDict[option] = None
         return configDict
 
-
 def getMongoClient(section):
 	configSectionMap = ConfigSectionMap(section)
 	mongo = MongoClient(configSectionMap['host'], int(configSectionMap['port']))[configSectionMap['name']]
@@ -41,14 +41,12 @@ def sendEmail(values, server):
 	print "in send email"
 	values['from'] = 'BazaarFunda Team'
 	values['url'] = 'http://www.bazaarfunda.com'
-	template = EmailTemplate(template_name='PriceMovement.html', values=values)
-	
+	template = EmailTemplate(template_name='PriceMovement.html', values=values)	
 	msg = MailMessage(from_email='bazaarfunda@gmail.com', to_emails=[values['email']], subject='BazaarFunda Price Alert For You', body=template.render())
 	send(mail_msg=msg, mail_server = server)
 
 @celery.task
-def priceMovement():
-	
+def priceMovement():	
 	server = MailServer(server_name='smtp.gmail.com', username='dude.abhi.chat@gmail.com', password='malesbian', port=0,   require_starttls=True)
 	client = getMongoClient('PriceSubscribers')
 	priceSubscribers = client.priceSubscribers

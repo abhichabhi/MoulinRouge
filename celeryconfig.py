@@ -5,7 +5,7 @@ CELERY_MONGODB_BACKEND_SETTINGS = {
 "host": "127.0.0.1",
 "port": 27017,
 "database": "jobs",
-"taskmeta_collection": "stock_taskmeta_collection",
+"taskmeta_collection": "Tracker_taskmeta_collection",
 }
  
 #used to schedule tasks periodically and passing optional arguments
